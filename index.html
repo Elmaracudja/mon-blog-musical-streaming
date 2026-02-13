@@ -3,27 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Blog Musical - Streaming</title>
+    <title>Mon Blog Musical</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #121212; color: white; }
-        .player-container { background: #1db954; padding: 20px; border-radius: 10px; text-align: center; }
-        audio { width: 100%; max-width: 500px; }
-        h1 { color: #1db954; }
-        .nft-btn { background: #ff0000; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .player { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 20px; padding: 30px; max-width: 400px; width: 100%; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        h1 { color: white; margin-bottom: 20px; font-size: 1.5em; }
+        .track-info { color: #eee; margin-bottom: 20px; }
+        audio { width: 100%; margin: 20px 0; }
+        .controls { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
+        button { background: #1db954; color: white; border: none; padding: 12px 24px; border-radius: 50px; font-size: 16px; cursor: pointer; transition: all 0.3s; }
+        button:hover { transform: scale(1.05); }
+        .nft { background: linear-gradient(45deg, #ff6b6b, #ee5a24); text-decoration: none; display: inline-block; }
     </style>
 </head>
 <body>
-    <h1>🎵 Mon Blog Musical</h1>
-    <p>Découvrez mes œuvres en streaming gratuit. Achetez en NFT pour propriété exclusive !</p>
-    
-    <div class="player-container">
-        <h2>Keep You Up - Version 2</h2>
-        <audio controls preload="metadata">
-            <source src="https://raw.githubusercontent.com/Elmaracudja/mon-blog-musical-streaming/main/audio/Keep%20You%20Up%20-%20Version%202.mp3" type="audio/mpeg">
-            Votre navigateur ne supporte pas l'audio HTML5.
+    <div class="player">
+        <h1>🎵 Streaming Sécurisé</h1>
+        <div class="track-info">
+            <strong>Keep You Up - Version 2</strong><br>
+            <small>Préview (masters en NFT)</small>
+        </div>
+        <audio id="player" 
+               src="https://raw.githubusercontent.com/Elmaracudja/mon-blog-musical-streaming/main/audio/Keep%20You%20Up%20-%20Version%202.mp3"
+               preload="none" 
+               controls 
+               controlsList="nodownload">
+            Audio non supporté.
         </audio>
-        <br><br>
-        <a href="#" class="nft-btn">Acheter NFT (bientôt)</a>
+        <div class="controls">
+            <button onclick="document.getElementById('player').play()">▶️ Play</button>
+            <button onclick="document.getElementById('player').pause()">⏸️ Pause</button>
+        </div>
+        <a href="#" class="nft" style="margin-top: 20px;">🔥 Acheter NFT Exclusive</a>
     </div>
 </body>
 </html>
