@@ -1,8 +1,29 @@
 <!DOCTYPE html>
-<html>
-<head><title>Mon Blog Musical</title></head>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Blog Musical - Streaming</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #121212; color: white; }
+        .player-container { background: #1db954; padding: 20px; border-radius: 10px; text-align: center; }
+        audio { width: 100%; max-width: 500px; }
+        h1 { color: #1db954; }
+        .nft-btn { background: #ff0000; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
 <body>
-<h1>Bienvenue sur mon streaming musical</h1>
-<!-- Player à ajouter ici -->
+    <h1>🎵 Mon Blog Musical</h1>
+    <p>Découvrez mes œuvres en streaming gratuit. Achetez en NFT pour propriété exclusive !</p>
+    
+    <div class="player-container">
+        <h2>Keep You Up - Version 2</h2>
+        <audio controls preload="metadata">
+            <source src="https://raw.githubusercontent.com/Elmaracudja/mon-blog-musical-streaming/main/audio/Keep%20You%20Up%20-%20Version%202.mp3" type="audio/mpeg">
+            Votre navigateur ne supporte pas l'audio HTML5.
+        </audio>
+        <br><br>
+        <a href="#" class="nft-btn">Acheter NFT (bientôt)</a>
+    </div>
 </body>
 </html>
