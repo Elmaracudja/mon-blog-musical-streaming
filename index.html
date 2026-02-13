@@ -3,77 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Blog Musical - Anti-DL</title>
+    <title>Mon Blog Musical - Protégé</title>
     <style>
-        * { margin: 0; padding: 0; user-select: none; -webkit-user-select: none; -moz-user-select: none; }
-        body { font-family: Arial; background: linear-gradient(135deg, #1e3c72, #2a5298); height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .player { background: rgba(255,255,255,0.95); border-radius: 25px; padding: 40px; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.4); max-width: 450px; width: 90%; }
-        h1 { color: #1db954; margin-bottom: 15px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; 
+            -webkit-user-select: none !important; -moz-user-select: none !important; 
+            user-select: none !important; -webkit-touch-callout: none; }
+        body { 
+            font-family: system-ui, -apple-system, sans-serif; 
+            background: linear-gradient(135deg, #1e3c72, #2a5298); 
+            min-height: 100vh; display: flex; align-items: center; justify-content: center; 
+            padding: 20px; overflow: hidden;
+        }
+        .player { 
+            background: rgba(255,255,255,0.95); 
+            border-radius: 25px; padding: 40px; text-align: center; 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4); max-width: 450px; width: 90%; 
+            position: relative;
+        }
+        h1 { color: #1db954; margin-bottom: 15px; font-weight: 700; }
         .track { color: #333; font-weight: bold; margin-bottom: 25px; }
-        #audioCanvas { width: 100%; height: 60px; background: #f0f0f0; border-radius: 30px; margin: 20px 0; cursor: pointer; position: relative; overflow: hidden; }
-        #playBtn { background: #1db954; color: white; border: none; border-radius: 50%; width: 70px; height: 70px; font-size: 24px; cursor: pointer; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); transition: all 0.3s; }
-        #playBtn.playing { background: #ff4444; }
-        #progress { position: absolute; bottom: 0; left: 0; height: 4px; background: #1db954; width: 0%; transition: width 0.1s; }
-        .nft { display: inline-block; background: linear-gradient(45deg, #ff6b6b, #feca57); color: white; padding: 15px 35px; text-decoration: none; border-radius: 50px; font-weight: bold; margin-top: 25px; box-shadow: 0 10px 25px rgba(255,107,107,0.4); }
+        #audioCanvas { 
+            width: 100%; height: 60px; background: linear-gradient(135deg, #1db954, #00d4aa); 
+            border-radius: 30px; margin: 20px 0; cursor: pointer; position: relative; 
+            overflow: hidden; transition: all 0.3s; box-shadow: 0 10px 25px rgba(29,185,84,0.4);
+        }
+        #audioCanvas:hover { transform: scale(1.02); box-shadow: 0 15px 35px rgba(29,185,84,0.6); }
+        #playBtn { 
+            background: rgba(255,255,255,0.9); color: #1db954; border: none; border-radius: 50%; 
+            width: 70px; height: 70px; font-size: 24px; cursor: pointer; position: absolute; 
+            left: 50%; top: 50%; transform: translate(-50%, -50%); transition: all 0.3s; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        #playBtn.playing { background: rgba(255,71,71,0.9); color: white; transform: translate(-50%, -50%) scale(1.1); }
+        #progress { position: absolute; bottom: 0; left: 0; height: 4px; background: rgba(255,255,255,0.8); width: 0%; transition: width 0.1s; }
+        .warning { font-size: 14px; color: #666; margin-top: 10px; }
+        .nft { 
+            display: inline-block; background: linear-gradient(45deg, #ff6b6b, #feca57); 
+            color: white; padding: 15px 35px; text-decoration: none; border-radius: 50px; 
+            font-weight: bold; margin-top: 25px; box-shadow: 0 10px 25px rgba(255,107,107,0.4); 
+            transition: all 0.3s;
+        }
+        .nft:hover { transform: translateY(-2px); box-shadow: 0 15px 35px rgba(255,107,107,0.6); }
+        ::selection, ::-moz-selection { background: transparent; color: transparent; }
     </style>
 </head>
 <body oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
     <div class="player" id="playerContainer">
-        <h1>🎵 Streaming Protégé</h1>
-        <div class="track" id="trackTitle">Keep You Up - Version 2</div>
+        <h1>🎵 Streaming Sécurisé</h1>
+        <div class="track">Keep You Up - Version 2</div>
         <div id="audioCanvas" onclick="togglePlay()">
-            <button id="playBtn" onclick="togglePlay()">▶</button>
+            <button id="playBtn" onclick="togglePlay(event)">▶</button>
             <div id="progress"></div>
         </div>
-        <div style="font-size: 14px; color: #666; margin-top: 10px;">Préview 30s (NFT pour full)</div>
+        <div class="warning" id="timerDisplay">Préview 45s max (NFT complet)</div>
         <a href="#" class="nft">🔥 Acheter NFT Master</a>
     </div>
 
     <script>
-        // URL obfuscated + fetch par chunks
-        const base64Audio = 'aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0VsbWFyYWN1ZGphL21vbi1ibG9nLW11c2ljYWwtc3RyZWFtaW5nL21haW4vYXVkaW8vS2VlcCUyMFlvdSUyMFVwJTIwLSUyMFZlcnNpb24lMjIubXAz'; // Base64 de ton URL
-        const audioUrl = atob(base64Audio);
+        // URL ULTIME : 6-parties base64
+        const urlParts = ['aHR0cHM6//Ly9yYXc=','LmdpdGh1YnVzZXJjb250','ZW50LmNvbS9FbG1h','cmFjdWRqYS9tb24tYmx','vZy1tdXNpY2FsLXN0','cmVhbWluZy9tYWluL2F1ZGlvL0tlZXAlMjBZb3UlMjBVcCAlMjAtJTIwVmVyc2lvbiUyMCUyLm1wMw=='];
+        const audioUrl = [atob(urlParts[0]),atob(urlParts[1]),atob(urlParts[2]),atob(urlParts[3]),atob(urlParts[4]),atob(urlParts[5])].join('');
+        
         let audio = new Audio();
         let isPlaying = false;
+        let startPerf = 0;
         let rafId;
-
+        
+        // Config audio optimisée
+        audio.preload = 'metadata';
+        audio.crossOrigin = 'anonymous';
+        
         audio.addEventListener('loadedmetadata', () => {
             audio.currentTime = 0;
             updateProgress();
         });
-
-        // Limite à 30s pour preview
+        
+        // Preview 45s STRICTE
         audio.addEventListener('timeupdate', () => {
-            if (audio.currentTime > 30) audio.pause();
-            updateProgress();
+            const elapsed = (performance.now() - startPerf) / 1000;
+            if (audio.currentTime > 45 || elapsed > 45) {
+                audio.pause();
+                audio.currentTime = 0;
+                stopPlayer();
+            } else {
+                updateProgress();
+                document.getElementById('timerDisplay').textContent = 
+                    `Préview ${Math.floor(elapsed)}s (${Math.floor(45-elapsed)}s restants) - NFT full`;
+            }
         });
-
-        function togglePlay() {
+        
+        function togglePlay(e) {
+            e.stopPropagation();
             if (isPlaying) {
                 audio.pause();
-                document.getElementById('playBtn').innerHTML = '▶';
             } else {
-                fetch(audioUrl).then(() => {
+                // Fetch silencieux + play
+                fetch(audioUrl, {method: 'HEAD'}).then(() => {
                     audio.src = audioUrl;
-                    audio.load();
-                    audio.play().catch(e => console.log('Play blocked'));
-                    document.getElementById('playBtn').innerHTML = '⏸';
+                    audio.play().catch(console.log);
+                    startPerf = performance.now();
+                }).catch(() => {
+                    // Fallback direct si fetch bloqué
+                    audio.src = audioUrl;
+                    audio.play().catch(console.log);
+                    startPerf = performance.now();
                 });
             }
             isPlaying = !isPlaying;
+            updateUI();
         }
-
+        
+        function stopPlayer() {
+            isPlaying = false;
+            updateUI();
+            document.getElementById('timerDisplay').textContent = 'Preview terminée - Achetez NFT !';
+        }
+        
+        function updateUI() {
+            const btn = document.getElementById('playBtn');
+            const canvas = document.getElementById('audioCanvas');
+            btn.textContent = isPlaying ? '⏸' : '▶';
+            btn.classList.toggle('playing', isPlaying);
+        }
+        
         function updateProgress() {
             const progress = document.getElementById('progress');
-            if (audio.duration) {
-                const percent = (audio.currentTime / audio.duration) * 100;
+            if (audio.duration && audio.currentTime) {
+                const percent = Math.min((audio.currentTime / 45) * 100, 100);
                 progress.style.width = percent + '%';
             }
+            rafId = requestAnimationFrame(updateProgress);
         }
-
-        // Bloque raccourcis
-        document.addEventListener('keydown', e => {
-            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) e.preventDefault();
+        
+        // PROTECTIONS FUSIONNÉES ULTIMES
+        ['contextmenu','selectstart','dragstart','keydown'].forEach(event => {
+            document.addEventListener(event, e => {
+                // F12, Ctrl+Shift+I, Ctrl+U/S/C
+                if (event === 'keydown') {
+                    if ([123].includes(e.keyCode) || 
+                        (e.ctrlKey && e.shiftKey && e.keyCode === 73) ||
+                        (e.ctrlKey && [83,85,67,86].includes(e.keyCode))) {
+                        e.preventDefault(); e.stopPropagation(); return false;
+                    }
+                } else {
+                    e.preventDefault(); e.stopPropagation();
+                }
+            }, true);
+        });
+        
+        // Anti-devtools resize (devtools = resize artificielle)
+        let origWidth = window.innerWidth;
+        window.addEventListener('resize', () => {
+            if (Math.abs(window.innerWidth - origWidth) > 50) {
+                document.body.innerHTML = '<div style="color:white;text-align:center;font-size:3em;margin-top:30vh;">⚠️ Contenu protégé</div>';
+            }
+            origWidth = window.innerWidth;
         });
     </script>
 </body>
